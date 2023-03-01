@@ -22,7 +22,8 @@ defmodule QuickAuction.Core.MixProject do
   defp deps do
     [
       {:typed_struct, "0.3.0"},
-      {:credo, "1.6.7", only: [:dev, :test], runtime: false}
+      {:credo, "1.6.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 end
