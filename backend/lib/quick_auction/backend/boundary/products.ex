@@ -1,7 +1,7 @@
 defmodule QuickAuction.Backend.Boundary.Products do
   use GenServer
   require Logger
-  alias QuickAuction.Core.Data.Product
+  alias QuickAuction.Core.Product
 
   def start_link(args) do
     Logger.debug("start_link")

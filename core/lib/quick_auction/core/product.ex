@@ -1,4 +1,4 @@
-defmodule QuickAuction.Core.Data.Product do
+defmodule QuickAuction.Core.Product do
   @moduledoc false
 
   use TypedStruct
@@ -12,7 +12,7 @@ defmodule QuickAuction.Core.Data.Product do
   end
 
   @spec new(String.t(), String.t(), String.t()) ::
-          {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Data.Product.t()}
+          {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Product.t()}
   def new(name, description, image_url)
       when is_binary(name) and is_binary(description) and is_binary(image_url) do
     {:ok, %__MODULE__{name: name, description: description, image_url: image_url}}

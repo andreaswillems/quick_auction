@@ -1,7 +1,7 @@
-defmodule QuickAuction.Core.Data.Bid do
+defmodule QuickAuction.Core.Bid do
   @moduledoc false
   use TypedStruct
-  alias QuickAuction.Core.Data.User
+  alias QuickAuction.Core.User
 
   typedstruct enforce: true do
     @typedoc "A bid"

@@ -1,7 +1,7 @@
-defmodule QuickAuction.Core.Data.Auction do
+defmodule QuickAuction.Core.Auction do
   @moduledoc false
   use TypedStruct
-  alias QuickAuction.Core.Data.{Bid, Product, User}
+  alias QuickAuction.Core.{Bid, Product, User}
 
   typedstruct enforce: true do
     @typedoc "An auction"
@@ -13,7 +13,7 @@ defmodule QuickAuction.Core.Data.Auction do
   end
 
   @spec new(Product.t(), DateTime.t()) ::
-          {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Data.Auction.t()}
+          {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Auction.t()}
   def new(product, start_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) do
     end_time = DateTime.add(start_time, 5, :minute)

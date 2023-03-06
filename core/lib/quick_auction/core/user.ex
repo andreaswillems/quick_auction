@@ -1,4 +1,4 @@
-defmodule QuickAuction.Core.Data.User do
+defmodule QuickAuction.Core.User do
   @moduledoc false
   use TypedStruct
 
@@ -9,7 +9,7 @@ defmodule QuickAuction.Core.Data.User do
     # field :email, String.t()
   end
 
-  @spec new(binary) :: {:ok, QuickAuction.Core.Data.User.t()}
+  @spec new(binary) :: {:ok, QuickAuction.Core.User.t()}
   def new(name) when is_binary(name) do
     {:ok, %__MODULE__{name: name}}
   end
