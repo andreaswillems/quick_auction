@@ -10,7 +10,8 @@ defmodule QuickAuction.Backend.Application do
     children = [
       # Starts a worker by calling: QuickAuction.Backend.Worker.start_link(arg)
       # {QuickAuction.Backend.Worker, arg}
-      QuickAuction.Backend.Boundary.Products
+      QuickAuction.Backend.Boundary.Products,
+      QuickAuction.Backend.Boundary.Auctions
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

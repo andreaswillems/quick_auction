@@ -12,8 +12,19 @@ defmodule QuickAuction.Core.Auction do
     field :bids, list(Bid.t())
   end
 
-  @spec new(Product.t(), DateTime.t()) ::
-          {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Auction.t()}
+  def new(product, start_time, end_time)
+      when is_struct(product, Product) and is_struct(start_time, DateTime) and
+             is_struct(end_time, DateTime) do
+    {:ok,
+     %__MODULE__{
+       product: product,
+       start_time: start_time,
+       end_time: end_time,
+       current_price: 0,
+       bids: []
+     }}
+  end
+
   def new(product, start_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) do
     end_time = DateTime.add(start_time, 5, :minute)
