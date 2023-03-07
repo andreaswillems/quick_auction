@@ -4,16 +4,16 @@ defmodule QuickAuction.Core.User do
   """
   use TypedStruct
 
-  typedstruct do
+  typedstruct enforce: true do
     @typedoc "A user"
-
-    field :name, String.t(), enforce: true
+    field :id, String.t()
+    field :name, String.t()
     # field :email, String.t()
   end
 
   @spec new(binary) :: {:ok, QuickAuction.Core.User.t()}
   def new(name) when is_binary(name) do
-    {:ok, %__MODULE__{name: name}}
+    {:ok, %__MODULE__{id: UUID.uuid4(), name: name}}
   end
 
   def _, do: {:error, :wrong_argument_type}

@@ -7,7 +7,7 @@ defmodule QuickAuction.Core.Product do
 
   typedstruct enforce: true do
     @typedoc "A product"
-
+    field :id, String.t()
     field :name, String.t()
     field :description, String.t()
     field :image_url, String.t()
@@ -17,7 +17,8 @@ defmodule QuickAuction.Core.Product do
           {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Product.t()}
   def new(name, description, image_url)
       when is_binary(name) and is_binary(description) and is_binary(image_url) do
-    {:ok, %__MODULE__{name: name, description: description, image_url: image_url}}
+    {:ok,
+     %__MODULE__{id: UUID.uuid4(), name: name, description: description, image_url: image_url}}
   end
 
   def new(_, _, _), do: {:error, :wrong_argument_type}

@@ -8,6 +8,7 @@ defmodule QuickAuction.Core.Auction do
 
   typedstruct enforce: true do
     @typedoc "An auction"
+    field :id, String.t()
     field :product, Product.t()
     field :start_time, DateTime.t()
     field :end_time, DateTime.t()
@@ -22,6 +23,7 @@ defmodule QuickAuction.Core.Auction do
              is_struct(end_time, DateTime) do
     {:ok,
      %__MODULE__{
+       id: UUID.uuid4(),
        product: product,
        start_time: start_time,
        end_time: end_time,
@@ -40,6 +42,7 @@ defmodule QuickAuction.Core.Auction do
 
     {:ok,
      %__MODULE__{
+       id: UUID.uuid4(),
        product: product,
        start_time: start_time,
        end_time: end_time,

@@ -1,7 +1,7 @@
 defmodule QuickAuction.CoreTest do
   use ExUnit.Case
   doctest QuickAuction.Core
-  alias QuickAuction.Core.Data.{Auction, Bid, Product, User}
+  alias QuickAuction.Core.{Auction, Bid, Product, User}
 
   test "greets the world" do
     assert QuickAuction.Core.hello() == :world
