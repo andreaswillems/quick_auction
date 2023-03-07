@@ -1,5 +1,7 @@
 defmodule QuickAuction.Core.Bid do
-  @moduledoc false
+  @moduledoc """
+  Represents a bid.
+  """
   use TypedStruct
   alias QuickAuction.Core.User
 
@@ -10,6 +12,8 @@ defmodule QuickAuction.Core.Bid do
     field :created_at, DateTime.t()
   end
 
+  @spec new(User.t(), integer(), DateTime.t()) ::
+          {:ok, __MODULE__.t()} | {:error, :wrong_argument_type}
   def new(user, amount, created_at)
       when is_struct(user, User) and is_integer(amount) and is_struct(created_at, DateTime) do
     {:ok, %__MODULE__{user: user, amount: amount, created_at: created_at}}

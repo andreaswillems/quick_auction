@@ -1,5 +1,7 @@
 defmodule QuickAuction.Core.User do
-  @moduledoc false
+  @moduledoc """
+  Represents an user.
+  """
   use TypedStruct
 
   typedstruct do

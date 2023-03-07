@@ -1,5 +1,7 @@
 defmodule QuickAuction.Core.Product do
-  @moduledoc false
+  @moduledoc """
+  Represents a product.
+  """
 
   use TypedStruct
 

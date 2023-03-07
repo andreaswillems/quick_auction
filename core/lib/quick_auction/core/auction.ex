@@ -1,6 +1,9 @@
 defmodule QuickAuction.Core.Auction do
-  @moduledoc false
+  @moduledoc """
+  Represents an auction.
+  """
   use TypedStruct
+  alias QuickAuction.Core.Auction
   alias QuickAuction.Core.{Bid, Product, User}
 
   typedstruct enforce: true do
@@ -12,6 +15,8 @@ defmodule QuickAuction.Core.Auction do
     field :bids, list(Bid.t())
   end
 
+  @spec new(Product.t(), DateTime.t(), DateTime.t()) ::
+          {:ok, QuickAuction.Core.Auction.t()} | {:error, :wrong_argument_type}
   def new(product, start_time, end_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) and
              is_struct(end_time, DateTime) do
@@ -25,6 +30,10 @@ defmodule QuickAuction.Core.Auction do
      }}
   end
 
+  def new(_, _, _), do: {:error, :wrong_argument_type}
+
+  @spec new(Product.t(), DateTime.t()) ::
+          {:ok, QuickAuction.Core.Auction.t()} | {:error, :wrong_argument_type}
   def new(product, start_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) do
     end_time = DateTime.add(start_time, 5, :minute)
@@ -41,7 +50,9 @@ defmodule QuickAuction.Core.Auction do
 
   def new(_, _), do: {:error, :wrong_argument_type}
 
-  def add_bid(auction, user, amount, created_at)
+  @spec add_bid(Auction.t(), User.t(), integer(), DateTime.t()) ::
+          {:error, :wrong_argument_type} | Auction.t()
+  def add_bid(%Auction{} = auction, %User{} = user, amount, %DateTime{} = created_at)
       when is_struct(auction, __MODULE__) and is_struct(user, User) and is_integer(amount) do
     {:ok, bid} = Bid.new(user, amount, created_at)
     updated_bids = [bid | auction.bids]
@@ -57,6 +68,12 @@ defmodule QuickAuction.Core.Auction do
   end
 
   def add_bid(_, _, _, _), do: {:error, :wrong_argument_type}
+
+  @spec add_bid(Auction.t(), Bid.t()) ::
+          {:error, :wrong_argument_type} | Auction.t()
+  def add_bid(%Auction{} = auction, %Bid{} = bid) do
+    add_bid(auction, bid.user, bid.amount, bid.created_at)
+  end
 
   def get_winner(auction) when is_struct(auction, __MODULE__) do
     case Enum.empty?(auction.bids) do
