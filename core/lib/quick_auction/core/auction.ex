@@ -12,13 +12,13 @@ defmodule QuickAuction.Core.Auction do
     field :product, Product.t()
     field :start_time, DateTime.t()
     field :end_time, DateTime.t()
-    field :current_price, float()
+    field :current_price, integer()
     field :bids, list(Bid.t())
   end
 
-  @spec new(Product.t(), DateTime.t(), DateTime.t()) ::
-          {:ok, QuickAuction.Core.Auction.t()} | {:error, :wrong_argument_type}
-  def new(product, start_time, end_time)
+  # @spec new(Product.t(), DateTime.t(), DateTime.t()) ::
+  #         {:error, :wrong_argument_type} | {:ok, QuickAuction.Core.Auction.t()}
+  def new(%Product{} = product, %DateTime{} = start_time, %DateTime{} = end_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) and
              is_struct(end_time, DateTime) do
     {:ok,
@@ -32,11 +32,11 @@ defmodule QuickAuction.Core.Auction do
      }}
   end
 
-  def new(_, _, _), do: {:error, :wrong_argument_type}
+  # def new(_, _, _), do: {:error, :wrong_argument_type}
 
-  @spec new(Product.t(), DateTime.t()) ::
-          {:ok, QuickAuction.Core.Auction.t()} | {:error, :wrong_argument_type}
-  def new(product, start_time)
+  # @spec new(Product.t(), DateTime.t()) ::
+  #         {:ok, QuickAuction.Core.Auction.t()} | {:error, :wrong_argument_type}
+  def new(%Product{} = product, %DateTime{} = start_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) do
     end_time = DateTime.add(start_time, 5, :minute)
 
@@ -51,7 +51,7 @@ defmodule QuickAuction.Core.Auction do
      }}
   end
 
-  def new(_, _), do: {:error, :wrong_argument_type}
+  # def new(_, _), do: {:error, :wrong_argument_type}
 
   @spec add_bid(Auction.t(), User.t(), integer(), DateTime.t()) ::
           {:error, :wrong_argument_type} | Auction.t()
@@ -60,12 +60,10 @@ defmodule QuickAuction.Core.Auction do
     {:ok, bid} = Bid.new(user, amount, created_at)
     updated_bids = [bid | auction.bids]
 
-    current_price_integer =
+    current_price =
       Enum.reduce(updated_bids, 0, fn entry, acc ->
         entry.amount + acc
       end)
-
-    current_price = current_price_integer / 100
 
     %{auction | bids: updated_bids, current_price: current_price}
   end

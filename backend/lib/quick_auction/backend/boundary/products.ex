@@ -33,16 +33,17 @@ defmodule QuickAuction.Backend.Boundary.Products do
 
   defp read_from_file do
     # read product data from file and store in process state
-    File.read!("products.json")
+    File.read!("products_2.json")
     |> Jason.decode!(keys: :atoms)
     |> Enum.map(&to_product/1)
   end
 
-  defp to_product(entry) when is_map(entry),
-    do: Product.new(entry.title, entry.description, entry.thumbnail)
-
-  defp fetch_random_product(products) do
-    # pick random product from process state
-    Enum.random(products)
+  defp to_product(entry) when is_map(entry) do
+    {:ok, product} = Product.new(entry.title, entry.description, entry.image)
+    product
   end
+
+  # pick random product from process state
+  defp fetch_random_product(products) when length(products) > 0, do: Enum.random(products)
+  defp fetch_random_product([]), do: :error
 end

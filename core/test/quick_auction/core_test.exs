@@ -19,7 +19,7 @@ defmodule QuickAuction.CoreTest do
     auction = Auction.add_bid(auction, user, 100, DateTime.utc_now())
 
     assert Enum.count(auction.bids) == 1
-    assert auction.current_price == 1.00
+    assert auction.current_price == 100
   end
 
   test "the last bid wins" do
@@ -33,6 +33,6 @@ defmodule QuickAuction.CoreTest do
 
     {:ok, winner} = Auction.get_winner(auction)
     assert winner.name == "User2"
-    assert winner.end_price == 2.0
+    assert winner.end_price == 200
   end
 end

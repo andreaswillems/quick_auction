@@ -35,6 +35,7 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
     Logger.debug("handle_continue :create_first_auction")
 
     auction = new_auction()
+    Logger.debug("handle_continue :create_first_auction auction #{inspect(auction)}")
 
     tick()
     {:noreply, %{auctions: [auction], current: auction}}
@@ -49,17 +50,15 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
     do: {:reply, auctions, state}
 
   @impl true
-  def handle_call({:put_bid, bid}, _from, %{current: current, auctions: auctions} = state) do
+  def handle_call({:put_bid, bid}, _from, %{current: current, auctions: auctions} = _state) do
     Logger.debug("handle_call :put_bid")
-    updated_current = Auction.add_bid(current, bid)
-    IO.inspect(updated_current)
 
+    updated_current = Auction.add_bid(current, bid)
     [_ | tail] = auctions
     updated_auctions = [updated_current | tail]
     IO.inspect(updated_auctions)
 
-    # {:reply, current, %{current: updated_current, auctions: updated_auctions}}
-    {:reply, current, state}
+    {:reply, updated_current, %{current: updated_current, auctions: updated_auctions}}
   end
 
   @impl true
@@ -88,11 +87,15 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
   end
 
   defp new_auction do
-    {:ok, product} = Products.random()
-    start_time = DateTime.utc_now()
-
     [unit: unit, amount: amount_to_add] = Application.fetch_env!(:backend, :auctions)
+    product = Products.random()
+    IO.inspect(product)
+
+    start_time = DateTime.utc_now()
+    IO.inspect(start_time)
+
     end_time = DateTime.add(start_time, amount_to_add, unit)
+    IO.inspect(end_time)
 
     {:ok, auction} = Auction.new(product, start_time, end_time)
     auction
