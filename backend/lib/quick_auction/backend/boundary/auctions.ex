@@ -83,7 +83,7 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
   end
 
   defp tick do
-    Process.send_after(__MODULE__, :tick, 10_000)
+    Process.send_after(__MODULE__, :tick, 30_000)
   end
 
   defp new_auction do

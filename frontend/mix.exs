@@ -19,7 +19,7 @@ defmodule QuickAuction.Frontend.MixProject do
   def application do
     [
       mod: {QuickAuction.Frontend.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:crypto, :logger, :runtime_tools]
     ]
   end
 
@@ -43,7 +43,9 @@ defmodule QuickAuction.Frontend.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:uuid, "1.1.8"},
+      {:libcluster, "3.3.2"}
     ]
   end
 

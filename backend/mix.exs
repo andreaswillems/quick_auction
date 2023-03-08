@@ -25,7 +25,9 @@ defmodule QuickAuction.Backend.MixProject do
       {:core, path: "../core"},
       {:credo, "1.6.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:jason, "1.4.0"}
+      {:jason, "1.4.0"},
+      {:libcluster, "3.3.2"},
+      {:phoenix_pubsub, "2.1.1"}
     ]
   end
 end

@@ -1,0 +1,8 @@
+<%= Phoenix.HTML.Form.form_for @form, ~p"/login", fn f -> %>
+  Name: <%= Phoenix.HTML.Form.text_input(f, :username) %>
+  <%= Phoenix.HTML.Form.submit(
+    "Submit",
+    class:
+      "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80"
+  ) %>
+<% end %>

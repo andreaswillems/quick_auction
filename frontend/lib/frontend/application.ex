@@ -7,11 +7,15 @@ defmodule QuickAuction.Frontend.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.fetch_env!(:libcluster, :topologies)
+
     children = [
+      # Start cluster supervisor
+      {Cluster.Supervisor, [topologies, [name: QuickAuction.ClusterSupervisor]]},
       # Start the Telemetry supervisor
       QuickAuction.FrontendWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, name: QuickAuction.Frontend.PubSub},
+      {Phoenix.PubSub, name: QuickAuction.PubSub},
       # Start the Endpoint (http/https)
       QuickAuction.FrontendWeb.Endpoint
       # Start a worker by calling: QuickAuction.Frontend.Worker.start_link(arg)

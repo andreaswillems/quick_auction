@@ -18,6 +18,9 @@ defmodule QuickAuction.FrontendWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/login", LoginController, :index
+    post "/login", LoginController, :create
+    live "/auctions", AuctionsLive
   end
 
   # Other scopes may use custom stacks.

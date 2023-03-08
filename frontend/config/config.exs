@@ -17,7 +17,7 @@ config :frontend, QuickAuction.FrontendWeb.Endpoint,
     formats: [html: QuickAuction.FrontendWeb.ErrorHTML, json: QuickAuction.FrontendWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: QuickAuction.Frontend.PubSub,
+  pubsub_server: QuickAuction.PubSub,
   live_view: [signing_salt: "NoxFUCby"]
 
 # Configure esbuild (the version is required)

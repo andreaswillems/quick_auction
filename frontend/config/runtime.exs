@@ -20,6 +20,16 @@ if System.get_env("PHX_SERVER") do
   config :frontend, QuickAuction.FrontendWeb.Endpoint, server: true
 end
 
+config :libcluster,
+  topologies: [
+    epmd: [
+      strategy: Elixir.Cluster.Strategy.Epmd,
+      config: [
+        hosts: [:"backend@OLOK-PO-265", :"frontend@OLOK-PO-265"]
+      ]
+    ]
+  ]
+
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you

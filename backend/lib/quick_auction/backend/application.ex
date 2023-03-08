@@ -7,9 +7,14 @@ defmodule QuickAuction.Backend.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.fetch_env!(:libcluster, :topologies)
+    IO.inspect(topologies)
+
     children = [
       # Starts a worker by calling: QuickAuction.Backend.Worker.start_link(arg)
       # {QuickAuction.Backend.Worker, arg}
+      {Cluster.Supervisor, [topologies, [name: QuickAuction.ClusterSupervisor]]},
+      {Phoenix.PubSub, name: QuickAuction.PubSub},
       QuickAuction.Backend.Boundary.Products,
       QuickAuction.Backend.Boundary.Auctions
     ]
