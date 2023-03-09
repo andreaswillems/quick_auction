@@ -1,6 +1,7 @@
 defmodule QuickAuction.FrontendWeb.AuctionsLive do
   use QuickAuction.FrontendWeb, :live_view
   require Logger
+  alias QuickAuction.FrontendWeb.Components.{Auction, Product}
 
   @pubsub_name Application.compile_env!(:frontend, QuickAuction.FrontendWeb.Endpoint)[
                  :pubsub_server
@@ -22,7 +23,8 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
      |> assign(:user_id, user_id)
      |> assign(:auction, %{
        end_time: "",
-       current_price: 100,
+       current_price: 0.00,
+       current_winner: "Andreas",
        product: %{name: "", description: "", image_url: ""}
      })
      |> assign(:loading, false)
@@ -37,120 +39,25 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
     <h1>Hello <%= @user_name %></h1>
     <div class="p-16">
       <!--Card 1-->
-      <div class="mix-w-sm max-w-md rounded overflow-hidden shadow-xl">
-        <img class="mx-auto max-h-96" src={@auction.product.image_url} alt="Mountain" />
-        <div class="px-6 py-4">
-          <div class="font-bold text-xl mb-2"><%= @auction.product.name %></div>
-          <p class="text-gray-700 text-base">
-            <%= @auction.product.description %>
-          </p>
-        </div>
+      <div class="bg-white mix-w-sm max-w-md rounded overflow-hidden shadow-xl">
+        <Product.info product={@auction.product} />
         <hr />
-        <div class="px-6 pt-4 pb-2 w-full">
-          <div class="flex flex-row text-l mb-2">
-            <div class="font-bold">Auction ends at</div>
-            <div class="flex-grow text-right"><%= @auction.end_time %></div>
-          </div>
-          <div class="flex flex-row text-l mb-2">
-            <div class="font-bold">Current price</div>
-            <div class="flex-grow text-right"><%= @auction.current_price %> €</div>
-          </div>
-          <div class="flex flex-row text-l mb-2">
-            <div class="font-bold">Highest bidder:</div>
-            <div class="flex-grow text-right">Andreas</div>
-          </div>
-        </div>
+        <Auction.info
+          end_time={@auction.end_time}
+          current_price={@auction.current_price}
+          current_winner={@auction.current_winner}
+        />
         <hr />
         <div>
           <div class="w-full p-4">
             <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
-            <%= if @loading do %>
-              <div class="border border-purple-800 rounded-lg px-4 py-3 mx-0 shadow-outline">
-                <svg
-                  class={["animate-spin h-5 w-5 mx-auto"]}
-                  width="100"
-                  height="100"
-                  viewBox="0 0 22 22"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#6b21a8"
-                >
-                  <g fill="none" fill-rule="evenodd" stroke-width="2">
-                    <circle cx="11" cy="11" r="1">
-                      <animate
-                        attributeName="r"
-                        begin="0s"
-                        dur="1.8s"
-                        values="1; 10"
-                        calcMode="spline"
-                        keyTimes="0; 1"
-                        keySplines="0.165, 0.84, 0.44, 1"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="stroke-opacity"
-                        begin="0s"
-                        dur="1.8s"
-                        values="1; 0"
-                        calcMode="spline"
-                        keyTimes="0; 1"
-                        keySplines="0.3, 0.61, 0.355, 1"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <circle cx="11" cy="11" r="1">
-                      <animate
-                        attributeName="r"
-                        begin="-0.9s"
-                        dur="1.8s"
-                        values="1; 10"
-                        calcMode="spline"
-                        keyTimes="0; 1"
-                        keySplines="0.165, 0.84, 0.44, 1"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="stroke-opacity"
-                        begin="-0.9s"
-                        dur="1.8s"
-                        values="1; 0"
-                        calcMode="spline"
-                        keyTimes="0; 1"
-                        keySplines="0.3, 0.61, 0.355, 1"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-                </svg>
-              </div>
-            <% end %>
-            <%= unless @loading do %>
-              <div class="flex gap-1 justify-around rounded-lg text-lg" role="group">
-                <button
-                  phx-click="make_bid"
-                  phx-value-amount="1"
-                  phx-throttle="5000"
-                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-                >
-                  <span>0,01 €</span>
-                </button>
-                <button
-                  phx-click="make_bid"
-                  phx-value-amount="10"
-                  phx-throttle="5000"
-                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-                >
-                  0,10 €
-                </button>
-                <button
-                  phx-click="make_bid"
-                  phx-value-amount="100"
-                  phx-throttle="5000"
-                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-                >
-                  1,00 €
-                </button>
-              </div>
-            <% end %>
+            <Auction.activity_indicator :if={@loading} />
+
+            <div :if={!@loading} class="flex gap-1 justify-around rounded-lg text-lg" role="group">
+              <Auction.bid_button title="0.01" event_name="make_bid" event_value="1" />
+              <Auction.bid_button title="0.10" event_name="make_bid" event_value="10" />
+              <Auction.bid_button title="1.00" event_name="make_bid" event_value="100" />
+            </div>
           </div>
         </div>
       </div>
@@ -197,6 +104,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
     updated_price = format_price(auction.current_price)
 
     %{auction | end_time: updated_end_time, current_price: updated_price}
+    |> Map.put(:current_winner, "Andreas")
   end
 
   defp format_end_time(timestamp) do
