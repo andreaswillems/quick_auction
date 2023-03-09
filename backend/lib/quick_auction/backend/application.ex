@@ -16,7 +16,8 @@ defmodule QuickAuction.Backend.Application do
       {Cluster.Supervisor, [topologies, [name: QuickAuction.ClusterSupervisor]]},
       {Phoenix.PubSub, name: QuickAuction.PubSub},
       QuickAuction.Backend.Boundary.Products,
-      QuickAuction.Backend.Boundary.Auctions
+      QuickAuction.Backend.Boundary.Auctions,
+      QuickAuction.Backend.Boundary.Adapter
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

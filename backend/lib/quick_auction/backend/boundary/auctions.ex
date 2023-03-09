@@ -2,7 +2,7 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
   use GenServer
   require Logger
   alias QuickAuction.Core.{Auction, Bid}
-  alias QuickAuction.Backend.Boundary.Products
+  alias QuickAuction.Backend.Boundary.{Adapter, Products}
 
   def start_link(args) do
     Logger.debug("start_link")
@@ -57,6 +57,8 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
     [_ | tail] = auctions
     updated_auctions = [updated_current | tail]
     IO.inspect(updated_auctions)
+
+    Adapter.notify_auction_updated(updated_current)
 
     {:reply, updated_current, %{current: updated_current, auctions: updated_auctions}}
   end

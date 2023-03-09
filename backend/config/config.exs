@@ -7,3 +7,5 @@ config :logger, :console,
 config :backend, :auctions,
   unit: :second,
   amount: 60
+
+config :backend, pubsub_name: QuickAuction.PubSub
