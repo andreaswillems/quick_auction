@@ -10,11 +10,11 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
     <div class="px-6 pt-4 pb-2 w-full">
       <div class="flex flex-row text-l mb-2">
         <div class="font-bold">Auction ends at</div>
-        <div class="flex-grow text-right"><%= @end_time %></div>
+        <div class="flex-grow text-right"><%= format_timestamp(@end_time) %></div>
       </div>
       <div class="flex flex-row text-l mb-2">
         <div class="font-bold">Current price</div>
-        <div class="flex-grow text-right"><%= @current_price %> €</div>
+        <div class="flex-grow text-right"><%= format_amount(@current_price) %> €</div>
       </div>
       <div class="flex flex-row text-l mb-2">
         <div class="font-bold">Highest bidder:</div>
@@ -102,5 +102,17 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
       <span><%= @title %> €</span>
     </button>
     """
+  end
+
+  defp format_timestamp(timestamp) do
+    timestamp
+    |> DateTime.shift_zone!("Europe/Berlin")
+    |> DateTime.to_time()
+    |> Time.truncate(:second)
+    |> Time.to_iso8601()
+  end
+
+  defp format_amount(price) when is_integer(price) do
+    (price / 100) |> :erlang.float_to_binary(decimals: 2)
   end
 end

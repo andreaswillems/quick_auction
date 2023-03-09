@@ -1,7 +1,7 @@
 defmodule QuickAuction.FrontendWeb.AuctionsLive do
   use QuickAuction.FrontendWeb, :live_view
   require Logger
-  alias QuickAuction.FrontendWeb.Components.{Auction, Product}
+  alias QuickAuction.FrontendWeb.Components.{Auction, Bid, Product}
 
   @pubsub_name Application.compile_env!(:frontend, QuickAuction.FrontendWeb.Endpoint)[
                  :pubsub_server
@@ -22,10 +22,11 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
      |> assign(:user_name, user_name)
      |> assign(:user_id, user_id)
      |> assign(:auction, %{
-       end_time: "",
-       current_price: 0.00,
-       current_winner: "Andreas",
-       product: %{name: "", description: "", image_url: ""}
+       end_time: DateTime.utc_now(),
+       current_price: 0,
+       current_winner: "",
+       product: %{name: "", description: "", image_url: ""},
+       bids: []
      })
      |> assign(:loading, false)
      |> assign(:loading_1, false)
@@ -60,6 +61,8 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
             </div>
           </div>
         </div>
+        <hr />
+        <Bid.list bids={@auction.bids} />
       </div>
     </div>
     """
@@ -100,22 +103,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   end
 
   defp format_auction(auction) do
-    updated_end_time = format_end_time(auction.end_time)
-    updated_price = format_price(auction.current_price)
-
-    %{auction | end_time: updated_end_time, current_price: updated_price}
+    auction
     |> Map.put(:current_winner, "Andreas")
-  end
-
-  defp format_end_time(timestamp) do
-    timestamp
-    |> DateTime.shift_zone!("Europe/Berlin")
-    |> DateTime.to_time()
-    |> Time.truncate(:second)
-    |> Time.to_iso8601()
-  end
-
-  defp format_price(price) when is_integer(price) do
-    (price / 100) |> :erlang.float_to_binary(decimals: 2)
   end
 end
