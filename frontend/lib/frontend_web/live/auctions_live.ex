@@ -39,33 +39,39 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   def render(assigns) do
     ~H"""
     <h1>Hello <%= @user_name %></h1>
-    <div class="p-16">
-      <!--Card 1-->
-      <div class="bg-white mix-w-sm max-w-md rounded overflow-hidden shadow-xl">
-        <Product.info product={@auction.product} />
-        <hr />
-        <Auction.info
-          start_time={@auction.start_time}
-          end_time={@auction.end_time}
-          current_price={@auction.current_price}
-          current_winner={@auction.current_winner}
-        />
-        <hr />
+    <div class="mx-auto w-2/3 bg-white p-4 rounded overflow-hidden shadow-xl">
+      <div class="grid grid-cols-3">
+        <div class="col-span-2 border-r-solid border-r-2">
+          <Product.info product={@auction.product} />
+        </div>
         <div>
-          <div class="w-full p-4">
-            <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
-            <Auction.activity_indicator :if={@loading} />
+          <Auction.info
+            start_time={@auction.start_time}
+            end_time={@auction.end_time}
+            current_price={@auction.current_price}
+            current_winner={@auction.current_winner}
+          />
 
-            <div :if={!@loading} class="flex gap-1 justify-around rounded-lg text-lg" role="group">
-              <Auction.bid_button title="0.01" event_name="make_bid" event_value="1" />
-              <Auction.bid_button title="0.10" event_name="make_bid" event_value="10" />
-              <Auction.bid_button title="1.00" event_name="make_bid" event_value="100" />
+          <div>
+            <div class="w-full p-4">
+              <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
+              <Auction.activity_indicator :if={@loading} />
+
+              <div
+                :if={!@loading}
+                class="flex flex-col gap-1 justify-around rounded-lg text-lg"
+                role="group"
+              >
+                <Auction.bid_button title="0.01" event_name="make_bid" event_value="1" />
+                <Auction.bid_button title="0.10" event_name="make_bid" event_value="10" />
+                <Auction.bid_button title="1.00" event_name="make_bid" event_value="100" />
+              </div>
             </div>
           </div>
         </div>
-        <hr />
-        <Bid.list bids={@auction.bids} />
       </div>
+      <hr />
+      <Bid.list bids={@auction.bids} />
     </div>
     """
   end

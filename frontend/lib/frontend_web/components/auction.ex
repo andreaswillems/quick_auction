@@ -1,10 +1,10 @@
 defmodule QuickAuction.FrontendWeb.Components.Auction do
   use Phoenix.Component
 
-  attr :start_time, :map, required: true
-  attr :end_time, :map, required: true
-  attr :current_price, :float, required: true
-  attr :current_winner, :map, required: true
+  attr(:start_time, :map, required: true)
+  attr(:end_time, :map, required: true)
+  attr(:current_price, :float, required: true)
+  attr(:current_winner, :map, required: true)
 
   def info(assigns) do
     ~H"""
@@ -31,7 +31,7 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
 
   def activity_indicator(assigns) do
     ~H"""
-    <div class="border border-slate-800 rounded-lg px-4 py-3 mx-0 shadow-outline">
+    <div class="border border-slate-800 rounded-lg px-4 py-10 mx-0 shadow-outline">
       <svg
         class={["animate-spin h-5 w-5 mx-auto"]}
         width="100"
@@ -92,9 +92,9 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
     """
   end
 
-  attr :title, :string, required: true
-  attr :event_name, :string, required: true
-  attr :event_value, :string, required: true
+  attr(:title, :string, required: true)
+  attr(:event_name, :string, required: true)
+  attr(:event_value, :string, required: true)
 
   def bid_button(assigns) do
     ~H"""

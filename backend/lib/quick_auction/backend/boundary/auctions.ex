@@ -79,7 +79,7 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
         {:noreply, %{current: auction, auctions: [auction | auctions]}}
 
       :lt ->
-        Logger.debug("Current auction #{inspect(current)}")
+        # Logger.debug("Current auction #{inspect(current)}")
         tick()
         {:noreply, state}
     end
