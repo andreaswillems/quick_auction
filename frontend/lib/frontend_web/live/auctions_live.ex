@@ -24,7 +24,10 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
        end_time: "",
        current_price: 100,
        product: %{name: "", description: "", image_url: ""}
-     })}
+     })
+     |> assign(:loading_1, false)
+     |> assign(:loading_10, false)
+     |> assign(:loading_100, false)}
   end
 
   @impl true
@@ -33,7 +36,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
     <h1>Hello <%= @user_name %></h1>
     <div class="p-10">
       <!--Card 1-->
-      <div class="mix-w-sm max-w-md rounded overflow-hidden shadow-lg">
+      <div class="mix-w-sm max-w-md rounded overflow-hidden shadow-xl">
         <img class="mx-auto max-h-96" src={@auction.product.image_url} alt="Mountain" />
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2"><%= @auction.product.name %></div>
@@ -54,13 +57,89 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
           <div class="w-full">
             <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
             <div class="flex gap-1 justify-around rounded-lg text-lg" role="group">
-              <button class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline">
-                0,01 €
+              <button
+                phx-click="make_bid"
+                phx-value-amount="1"
+                phx-throttle="5000"
+                class={[
+                  "bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+                ]}
+              >
+                <%= if @loading_1 do %>
+                  <svg
+                    class={["animate-spin h-5 w-5 mx-auto"]}
+                    width="100"
+                    height="100"
+                    viewBox="0 0 22 22"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="#6b21a8"
+                  >
+                    <g fill="none" fill-rule="evenodd" stroke-width="2">
+                      <circle cx="11" cy="11" r="1">
+                        <animate
+                          attributeName="r"
+                          begin="0s"
+                          dur="1.8s"
+                          values="1; 10"
+                          calcMode="spline"
+                          keyTimes="0; 1"
+                          keySplines="0.165, 0.84, 0.44, 1"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="stroke-opacity"
+                          begin="0s"
+                          dur="1.8s"
+                          values="1; 0"
+                          calcMode="spline"
+                          keyTimes="0; 1"
+                          keySplines="0.3, 0.61, 0.355, 1"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <circle cx="11" cy="11" r="1">
+                        <animate
+                          attributeName="r"
+                          begin="-0.9s"
+                          dur="1.8s"
+                          values="1; 10"
+                          calcMode="spline"
+                          keyTimes="0; 1"
+                          keySplines="0.165, 0.84, 0.44, 1"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="stroke-opacity"
+                          begin="-0.9s"
+                          dur="1.8s"
+                          values="1; 0"
+                          calcMode="spline"
+                          keyTimes="0; 1"
+                          keySplines="0.3, 0.61, 0.355, 1"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                    </g>
+                  </svg>
+                <% end %>
+                <%= unless @loading_1 do %>
+                  <span>0,01 €</span>
+                <% end %>
               </button>
-              <button class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline">
+              <button
+                phx-click="make_bid"
+                phx-value-amount="10"
+                phx-throttle="5000"
+                class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+              >
                 0,10 €
               </button>
-              <button class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline">
+              <button
+                phx-click="make_bid"
+                phx-value-amount="100"
+                phx-throttle="5000"
+                class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+              >
                 1,00 €
               </button>
             </div>
@@ -77,11 +156,35 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
     {:noreply, assign(socket, auction: format_auction(auction))}
   end
 
+  @impl true
+  def handle_info(:clear_animation, socket) do
+    {:noreply,
+     socket
+     |> assign(:loading_1, false)
+     |> assign(:loading_10, false)
+     |> assign(:loading_100, false)}
+  end
+
   # fallback handler
   @impl true
   def handle_info(msg, socket) do
     Logger.debug("handle_info unknown message #{inspect(msg)}")
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("make_bid", %{"amount" => amount_raw}, socket) do
+    Logger.debug("handle_event make_bid #{inspect(amount_raw)}")
+
+    loading_key =
+      case amount_raw do
+        "1" -> :loading_1
+        "10" -> :loading_10
+        "100" -> :loading_100
+      end
+
+    Process.send_after(self(), :clear_animation, 5_000)
+    {:noreply, assign(socket, loading_key, true)}
   end
 
   defp format_auction(auction) do
