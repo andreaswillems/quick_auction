@@ -13,6 +13,7 @@ defmodule QuickAuction.Core.Auction do
     field :start_time, DateTime.t()
     field :end_time, DateTime.t()
     field :current_price, integer()
+    field :current_winner, User.t()
     field :bids, list(Bid.t())
   end
 
@@ -28,6 +29,7 @@ defmodule QuickAuction.Core.Auction do
        start_time: start_time,
        end_time: end_time,
        current_price: 0,
+       current_winner: %{},
        bids: []
      }}
   end
@@ -47,6 +49,7 @@ defmodule QuickAuction.Core.Auction do
        start_time: start_time,
        end_time: end_time,
        current_price: 0,
+       current_winner: %{},
        bids: []
      }}
   end
@@ -65,7 +68,7 @@ defmodule QuickAuction.Core.Auction do
         entry.amount + acc
       end)
 
-    %{auction | bids: updated_bids, current_price: current_price}
+    %{auction | bids: updated_bids, current_price: current_price, current_winner: user}
   end
 
   def add_bid(_, _, _, _), do: {:error, :wrong_argument_type}

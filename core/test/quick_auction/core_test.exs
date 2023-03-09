@@ -20,6 +20,7 @@ defmodule QuickAuction.CoreTest do
 
     assert Enum.count(auction.bids) == 1
     assert auction.current_price == 100
+    assert auction.current_winner == user
   end
 
   test "the last bid wins" do
