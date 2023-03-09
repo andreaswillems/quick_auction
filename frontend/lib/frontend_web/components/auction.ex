@@ -1,13 +1,18 @@
 defmodule QuickAuction.FrontendWeb.Components.Auction do
   use Phoenix.Component
 
-  attr :end_time, :string, required: true
+  attr :start_time, :map, required: true
+  attr :end_time, :map, required: true
   attr :current_price, :float, required: true
-  attr :current_winner, :string, required: true
+  attr :current_winner, :map, required: true
 
   def info(assigns) do
     ~H"""
     <div class="px-6 pt-4 pb-2 w-full">
+      <div class="flex flex-row text-l mb-2">
+        <div class="font-bold">Auction started at</div>
+        <div class="flex-grow text-right"><%= format_timestamp(@start_time) %></div>
+      </div>
       <div class="flex flex-row text-l mb-2">
         <div class="font-bold">Auction ends at</div>
         <div class="flex-grow text-right"><%= format_timestamp(@end_time) %></div>
@@ -18,7 +23,7 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
       </div>
       <div class="flex flex-row text-l mb-2">
         <div class="font-bold">Highest bidder:</div>
-        <div class="flex-grow text-right"><%= @current_winner %></div>
+        <div class="flex-grow text-right"><%= format_winner(@current_winner) %></div>
       </div>
     </div>
     """
@@ -114,5 +119,13 @@ defmodule QuickAuction.FrontendWeb.Components.Auction do
 
   defp format_amount(price) when is_integer(price) do
     (price / 100) |> :erlang.float_to_binary(decimals: 2)
+  end
+
+  defp format_winner(user) when is_map(user) do
+    if String.trim(user.name) == "" do
+      "-"
+    else
+      user.name
+    end
   end
 end

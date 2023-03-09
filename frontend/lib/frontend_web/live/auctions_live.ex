@@ -22,9 +22,10 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
      |> assign(:user_name, user_name)
      |> assign(:user_id, user_id)
      |> assign(:auction, %{
+       start_time: DateTime.utc_now(),
        end_time: DateTime.utc_now(),
        current_price: 0,
-       current_winner: "",
+       current_winner: %{name: ""},
        product: %{name: "", description: "", image_url: ""},
        bids: []
      })
@@ -44,6 +45,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
         <Product.info product={@auction.product} />
         <hr />
         <Auction.info
+          start_time={@auction.start_time}
           end_time={@auction.end_time}
           current_price={@auction.current_price}
           current_winner={@auction.current_winner}
@@ -71,7 +73,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   @impl true
   def handle_info({:auction_updated, auction}, socket) do
     Logger.debug("handle_info :auction_updated #{inspect(auction)}")
-    {:noreply, assign(socket, auction: format_auction(auction))}
+    {:noreply, assign(socket, auction: auction)}
   end
 
   @impl true
@@ -100,10 +102,5 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
 
     Process.send_after(self(), :clear_animation, 5_000)
     {:noreply, assign(socket, :loading, true)}
-  end
-
-  defp format_auction(auction) do
-    auction
-    |> Map.put(:current_winner, "Andreas")
   end
 end

@@ -65,14 +65,15 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
 
   @impl true
   def handle_info(:tick, %{current: current, auctions: auctions} = state) do
-    IO.inspect(state)
     now = DateTime.utc_now()
     end_of_auction = current.end_time
 
     case DateTime.compare(now, end_of_auction) do
       result when result in [:gt, :eq] ->
+        Adapter.notify_auction_ended(current)
+
         auction = new_auction()
-        Logger.debug("New auction #{inspect(auction)}")
+        Adapter.notify_auction_updated(auction)
 
         tick()
         {:noreply, %{current: auction, auctions: [auction | auctions]}}
@@ -85,19 +86,17 @@ defmodule QuickAuction.Backend.Boundary.Auctions do
   end
 
   defp tick do
-    Process.send_after(__MODULE__, :tick, 30_000)
+    Process.send_after(__MODULE__, :tick, 1_000)
   end
 
   defp new_auction do
     [unit: unit, amount: amount_to_add] = Application.fetch_env!(:backend, :auctions)
     product = Products.random()
-    # IO.inspect(product)
 
-    start_time = DateTime.utc_now()
-    # IO.inspect(start_time)
-
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    # shift starting time to next full minute
+    start_time = now |> DateTime.add(-now.second, :second) |> DateTime.add(1, :minute)
     end_time = DateTime.add(start_time, amount_to_add, unit)
-    # IO.inspect(end_time)
 
     {:ok, auction} = Auction.new(product, start_time, end_time)
     auction

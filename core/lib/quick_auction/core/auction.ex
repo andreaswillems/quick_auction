@@ -22,16 +22,7 @@ defmodule QuickAuction.Core.Auction do
   def new(%Product{} = product, %DateTime{} = start_time, %DateTime{} = end_time)
       when is_struct(product, Product) and is_struct(start_time, DateTime) and
              is_struct(end_time, DateTime) do
-    {:ok,
-     %__MODULE__{
-       id: UUID.uuid4(),
-       product: product,
-       start_time: start_time,
-       end_time: end_time,
-       current_price: 0,
-       current_winner: %{},
-       bids: []
-     }}
+    default_auction(product, start_time, end_time)
   end
 
   # def new(_, _, _), do: {:error, :wrong_argument_type}
@@ -42,16 +33,7 @@ defmodule QuickAuction.Core.Auction do
       when is_struct(product, Product) and is_struct(start_time, DateTime) do
     end_time = DateTime.add(start_time, 5, :minute)
 
-    {:ok,
-     %__MODULE__{
-       id: UUID.uuid4(),
-       product: product,
-       start_time: start_time,
-       end_time: end_time,
-       current_price: 0,
-       current_winner: %{},
-       bids: []
-     }}
+    default_auction(product, start_time, end_time)
   end
 
   # def new(_, _), do: {:error, :wrong_argument_type}
@@ -88,5 +70,18 @@ defmodule QuickAuction.Core.Auction do
         last_bid = hd(auction.bids)
         {:ok, %{name: last_bid.user.name, end_price: auction.current_price}}
     end
+  end
+
+  defp default_auction(product, start_time, end_time) do
+    {:ok,
+     %__MODULE__{
+       id: UUID.uuid4(),
+       product: product,
+       start_time: start_time,
+       end_time: end_time,
+       current_price: 0,
+       current_winner: %{name: ""},
+       bids: []
+     }}
   end
 end
