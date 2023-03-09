@@ -25,6 +25,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
        current_price: 100,
        product: %{name: "", description: "", image_url: ""}
      })
+     |> assign(:loading, false)
      |> assign(:loading_1, false)
      |> assign(:loading_10, false)
      |> assign(:loading_100, false)}
@@ -34,7 +35,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   def render(assigns) do
     ~H"""
     <h1>Hello <%= @user_name %></h1>
-    <div class="p-10">
+    <div class="p-16">
       <!--Card 1-->
       <div class="mix-w-sm max-w-md rounded overflow-hidden shadow-xl">
         <img class="mx-auto max-h-96" src={@auction.product.image_url} alt="Mountain" />
@@ -54,95 +55,95 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
             <div class="font-bold">Current price</div>
             <div class="flex-grow text-right"><%= @auction.current_price %> €</div>
           </div>
-          <div class="w-full">
+          <div class="w-full pb-4">
             <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
-            <div class="flex gap-1 justify-around rounded-lg text-lg" role="group">
-              <button
-                phx-click="make_bid"
-                phx-value-amount="1"
-                phx-throttle="5000"
-                class={[
-                  "bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-                ]}
-              >
-                <%= if @loading_1 do %>
-                  <svg
-                    class={["animate-spin h-5 w-5 mx-auto"]}
-                    width="100"
-                    height="100"
-                    viewBox="0 0 22 22"
-                    xmlns="http://www.w3.org/2000/svg"
-                    stroke="#6b21a8"
-                  >
-                    <g fill="none" fill-rule="evenodd" stroke-width="2">
-                      <circle cx="11" cy="11" r="1">
-                        <animate
-                          attributeName="r"
-                          begin="0s"
-                          dur="1.8s"
-                          values="1; 10"
-                          calcMode="spline"
-                          keyTimes="0; 1"
-                          keySplines="0.165, 0.84, 0.44, 1"
-                          repeatCount="indefinite"
-                        />
-                        <animate
-                          attributeName="stroke-opacity"
-                          begin="0s"
-                          dur="1.8s"
-                          values="1; 0"
-                          calcMode="spline"
-                          keyTimes="0; 1"
-                          keySplines="0.3, 0.61, 0.355, 1"
-                          repeatCount="indefinite"
-                        />
-                      </circle>
-                      <circle cx="11" cy="11" r="1">
-                        <animate
-                          attributeName="r"
-                          begin="-0.9s"
-                          dur="1.8s"
-                          values="1; 10"
-                          calcMode="spline"
-                          keyTimes="0; 1"
-                          keySplines="0.165, 0.84, 0.44, 1"
-                          repeatCount="indefinite"
-                        />
-                        <animate
-                          attributeName="stroke-opacity"
-                          begin="-0.9s"
-                          dur="1.8s"
-                          values="1; 0"
-                          calcMode="spline"
-                          keyTimes="0; 1"
-                          keySplines="0.3, 0.61, 0.355, 1"
-                          repeatCount="indefinite"
-                        />
-                      </circle>
-                    </g>
-                  </svg>
-                <% end %>
-                <%= unless @loading_1 do %>
+            <%= if @loading do %>
+              <div class="border border-purple-800 rounded-lg px-4 py-3 mx-0 shadow-outline">
+                <svg
+                  class={["animate-spin h-5 w-5 mx-auto"]}
+                  width="100"
+                  height="100"
+                  viewBox="0 0 22 22"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="#6b21a8"
+                >
+                  <g fill="none" fill-rule="evenodd" stroke-width="2">
+                    <circle cx="11" cy="11" r="1">
+                      <animate
+                        attributeName="r"
+                        begin="0s"
+                        dur="1.8s"
+                        values="1; 10"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.165, 0.84, 0.44, 1"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-opacity"
+                        begin="0s"
+                        dur="1.8s"
+                        values="1; 0"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.3, 0.61, 0.355, 1"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle cx="11" cy="11" r="1">
+                      <animate
+                        attributeName="r"
+                        begin="-0.9s"
+                        dur="1.8s"
+                        values="1; 10"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.165, 0.84, 0.44, 1"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-opacity"
+                        begin="-0.9s"
+                        dur="1.8s"
+                        values="1; 0"
+                        calcMode="spline"
+                        keyTimes="0; 1"
+                        keySplines="0.3, 0.61, 0.355, 1"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                </svg>
+              </div>
+            <% end %>
+            <%= unless @loading do %>
+              <div class="flex gap-1 justify-around rounded-lg text-lg" role="group">
+                <button
+                  phx-click="make_bid"
+                  phx-value-amount="1"
+                  phx-throttle="5000"
+                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+                >
                   <span>0,01 €</span>
-                <% end %>
-              </button>
-              <button
-                phx-click="make_bid"
-                phx-value-amount="10"
-                phx-throttle="5000"
-                class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-              >
-                0,10 €
-              </button>
-              <button
-                phx-click="make_bid"
-                phx-value-amount="100"
-                phx-throttle="5000"
-                class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
-              >
-                1,00 €
-              </button>
-            </div>
+                </button>
+                <button
+                  phx-click="make_bid"
+                  phx-value-amount="10"
+                  phx-throttle="5000"
+                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+                >
+                  0,10 €
+                </button>
+                <button
+                  phx-click="make_bid"
+                  phx-value-amount="100"
+                  phx-throttle="5000"
+                  class="bg-white flex-grow text-purple-800 hover:bg-purple-800 hover:text-white border border-purple-800 rounded-lg px-4 py-2 mx-0 outline-none focus:shadow-outline"
+                >
+                  1,00 €
+                </button>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>
@@ -158,11 +159,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
 
   @impl true
   def handle_info(:clear_animation, socket) do
-    {:noreply,
-     socket
-     |> assign(:loading_1, false)
-     |> assign(:loading_10, false)
-     |> assign(:loading_100, false)}
+    {:noreply, assign(socket, :loading, false)}
   end
 
   # fallback handler
@@ -176,15 +173,8 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   def handle_event("make_bid", %{"amount" => amount_raw}, socket) do
     Logger.debug("handle_event make_bid #{inspect(amount_raw)}")
 
-    loading_key =
-      case amount_raw do
-        "1" -> :loading_1
-        "10" -> :loading_10
-        "100" -> :loading_100
-      end
-
     Process.send_after(self(), :clear_animation, 5_000)
-    {:noreply, assign(socket, loading_key, true)}
+    {:noreply, assign(socket, :loading, true)}
   end
 
   defp format_auction(auction) do
