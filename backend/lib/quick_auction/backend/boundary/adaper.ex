@@ -14,6 +14,10 @@ defmodule QuickAuction.Backend.Boundary.Adapter do
     GenServer.cast(__MODULE__, {:notify_auction_updated, auction})
   end
 
+  def notify_auction_ended(%Auction{} = auction) do
+    GenServer.cast(__MODULE__, {:notify_auction_ended, auction})
+  end
+
   @impl true
   def init(_args) do
     {:ok, [], {:continue, :register_subscribers}}
@@ -28,6 +32,12 @@ defmodule QuickAuction.Backend.Boundary.Adapter do
   @impl true
   def handle_cast({:notify_auction_udpated, auction}, state) do
     Phoenix.PubSub.broadcast(@pubsub_name, "auction_updated", {:auction_updated, auction})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast({:notify_auction_ended, auction}, state) do
+    Phoenix.PubSub.broadcast(@pubsub_name, "auction_ended", {:auction_ended, auction})
     {:noreply, state}
   end
 

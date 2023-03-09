@@ -12,6 +12,7 @@ defmodule QuickAuction.FrontendWeb.LoginController do
   end
 
   def create(conn, %{"username" => username}) do
+    # TODO publish user opened session
     conn
     |> put_session(:user_name, username)
     |> put_session(:user_id, UUID.uuid4())
