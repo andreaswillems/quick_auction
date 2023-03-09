@@ -34,7 +34,7 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
     <div class="p-10">
       <!--Card 1-->
       <div class="mix-w-sm max-w-md rounded overflow-hidden shadow-lg">
-        <img class="w-full" src={@auction.product.image_url} alt="Mountain" />
+        <img class="mx-auto max-h-96" src={@auction.product.image_url} alt="Mountain" />
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2"><%= @auction.product.name %></div>
           <p class="text-gray-700 text-base">
@@ -43,9 +43,13 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
         </div>
         <hr />
         <div class="px-6 pt-4 pb-2 w-full">
-          <div class="text-l mb-2">
-            <span class="font-bold">Auction ends at </span><%= @auction.end_time %>
-            <span class="font-bold">Current price </span><%= @auction.current_price %>
+          <div class="flex flex-row text-l mb-2">
+            <div class="font-bold">Auction ends at</div>
+            <div class="flex-grow text-right"><%= @auction.end_time %></div>
+          </div>
+          <div class="flex flex-row text-l mb-2">
+            <div class="font-bold">Current price</div>
+            <div class="flex-grow text-right"><%= @auction.current_price %> €</div>
           </div>
           <div class="w-full">
             <h3 class="text-center text-xl text-gray-700 mb-2 font-bold">Make Bid</h3>
@@ -81,6 +85,16 @@ defmodule QuickAuction.FrontendWeb.AuctionsLive do
   end
 
   defp format_auction(auction) do
-    auction
+    updated_end_time = auction.end_time |> format_end_time()
+
+    %{auction | end_time: updated_end_time}
+  end
+
+  defp format_end_time(timestamp) do
+    timestamp
+    |> DateTime.shift_zone!("Europe/Berlin")
+    |> DateTime.to_time()
+    |> Time.truncate(:second)
+    |> Time.to_iso8601()
   end
 end
